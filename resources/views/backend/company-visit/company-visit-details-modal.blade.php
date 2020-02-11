@@ -1,6 +1,6 @@
 <!-- Modal -->
 
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
 
         <!-- Modal content-->
         <div class="modal-content">
@@ -32,7 +32,11 @@
 
                         <tr>
                             <td>Contact Person Email</td>
-                            <td>{{$companyVisit->companyVisitFollowUp->contact_email}}Address</td>
+                            <td>{{$companyVisit->companyVisitFollowUp->contact_email}}</td>
+                        </tr>
+                        <tr>
+                            <td>Contact Person Designation</td>
+                            <td>{{$companyVisit->designation}}</td>
                         </tr>
 
                         <tr>
@@ -59,17 +63,27 @@
                             <td>Status</td>
                             <td>
                                 @if($companyVisit->status==1)
-                                    <span class="btn btn-default"> Follow Up Need </span>
+                                    <span class="btn btn-default btn-xs"> Follow Up Need </span>
                                 @elseif($companyVisit->status==2)
-                                    <span class="btn btn-warning"> No Need Follow Up </span>
+                                    <span class="btn btn-warning btn-xs"> No Need Follow Up </span>
                                 @elseif($companyVisit->status==3)
-                                    <span class="btn btn-info"> Need QuotationNeed </span>
+                                    <span class="btn btn-warning btn-xs"> Need Quotation</span>
                                 @elseif($companyVisit->status==4)
-                                    <span class="btn btn-primary"> Quotation Submitted </span>
+                                    <span class="btn btn-primary btn-xs"> Quotation Submitted </span>
                                 @elseif($companyVisit->status==5)
-                                    <span class="btn btn-danger"> Fail to sale </span>
+                                    <span class="btn btn-danger btn-xs"> Fail to sale </span>
                                 @elseif($companyVisit->status==6)
-                                    <span class="btn btn-success"> Success to Sale </span>
+                                    <span class="btn btn-success btn-xs"> Success to Sale </span>
+                                @elseif($companyVisit->status==7)
+                                    <span class="btn btn-success btn-xs"> Technical Discussion </span>
+                                @elseif($companyVisit->status==8)
+                                    <span class="btn btn-success btn-xs"> PI Needed </span>
+                                @elseif($companyVisit->status==9)
+                                    <span class="btn btn-success btn-xs"> PI Submitted </span>
+                                @elseif($companyVisit->status==10)
+                                    <span class="btn btn-success btn-xs">Draft LC OPen </span>
+                                @elseif($companyVisit->status==11)
+                                    <span class="btn btn-success btn-xs"> LC OPen </span>
                                 @endif
                             </td>
                         </tr>

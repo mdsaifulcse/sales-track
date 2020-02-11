@@ -87,9 +87,14 @@
                                         <td>
                                             {{Form::open(array('route'=>['all-users.destroy',$user->id],'method'=>'DELETE','id'=>"deleteForm$user->id"))}}
 
-                                            <a href='{{URL::to("all-users/$user->id"."/edit")}}' title="Edit User" class="btn btn-info btn-xs">
+                                            <a href='{{URL::to("all-users/$user->id"."/edit")}}' title="Update user info" class="btn btn-info btn-xs">
                                                 <i class="fa fa-pencil-square"></i>
                                             </a>
+
+                                            <a href='{{URL::to("all-users/$user->id")}}' title="Click here to change password" class="btn btn-warning btn-xs">
+                                                <i class="fa fa-key"></i>
+                                            </a>
+
                                             <button type="button" class="btn btn-danger btn-xs" onclick="return deleteConfirm('deleteForm{{$user->id}}')">
                                                 <i class="fa fa-trash"></i>
                                             </button>

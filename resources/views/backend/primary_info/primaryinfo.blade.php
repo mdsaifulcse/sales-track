@@ -18,11 +18,7 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Primary Information</h3>
-
             </div>
-
-
-
 
             <div class="col-md-8 col-md-offset-2">
                 <div class="row">
@@ -54,7 +50,7 @@
                             <label for="inputEmail3" class="col-sm-2 col-form-label">Address</label>
                             <div class="col-sm-10">
 
-                                <textarea class="form-control" name="address" placeholder="address" ><?php echo $data->address;?></textarea>
+                                <textarea class="form-control" name="address1" placeholder="address" ><?php echo $data->address1;?></textarea>
 
                             </div>
                         </div>
@@ -69,7 +65,7 @@
                         <div class="form-group row">
                             <label for="inputPassword3" class="col-sm-2 col-form-label">Mobile No</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control"  name="mobile_no" placeholder="mobile_no" value="{{$data->mobile_no}}">
+                                <input type="text" class="form-control"  name="mobile" placeholder="mobile_no" value="{{$data->mobile}}">
                             </div>
                         </div>
                         <div class="form-group row">

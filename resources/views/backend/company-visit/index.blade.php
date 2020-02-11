@@ -6,7 +6,7 @@
         <li><a href="{{URL::to('home')}}"><i class="fa fa-home"></i> Home</a></li>
         <li class="{{URL::to('all-users')}}">Company Visit</li>
       </ol>
-    </section>
+
 @endsection
 
 
@@ -36,7 +36,7 @@
 
     <div class="box box-danger">
         <div class="box-header bg-gray-active">
-            <h3 class="box-title">All Company Visited List</h3>
+            <h3 class="box-title">Daily Report</h3>
 
             <h3 class="pull-right box-title">
                 <a href="{{URL::to('company-visit/create')}}">
@@ -49,43 +49,47 @@
         <div class="box-body">
 
                 @if($authRole!='stuff')
-                    {!! Form::open(['url'=>'','method'=>'POST','class'=>'form-vertical']) !!}
-                    <div class="row">
-                        <div class="col-md-2 col-lg-2">
-                            <label class="control-label"> Select User </label>
-                            <div class="form-group">
-                                {{Form::select('follow_up_by',$users,[],['id'=>'userId','class'=>'form-control','placeholder'=>'-All Users-','required'=>true])}}
-                            </div>
-                        </div>
 
-                        {{--<div class="col-md-2 col-lg-2">--}}
-                            {{--<label class="control-label"> Product </label>--}}
-                            {{--<div class="form-group">--}}
-                                {{--{{Form::select('follow_up_by',$users,[],['id'=>'userId','class'=>'form-control select2','placeholder'=>'Select one','required'=>true])}}--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                    <div class="well">
+                        {!! Form::open(['url'=>'','method'=>'POST','class'=>'form-vertical']) !!}
+                        <div class="row">
+                            <div class="col-md-2 col-lg-2">
+                                <label class="control-label"> Select User </label>
+                                <div class="form-group">
+                                    {{Form::select('follow_up_by',$users,[],['id'=>'userId','class'=>'form-control','placeholder'=>'-All Users-','required'=>true])}}
+                                </div>
+                            </div>
 
-                        <div class="col-md-2 col-lg-2">
-                            <div class="form-group">
-                                <label> Date From</label>
-                                {{Form::text('start_date','',['id'=>'startDate','class'=>'form-control singleDatePicker','placeholder'=>'Date from','required'=>true])}}
+                            <div class="col-md-2 col-lg-2">
+                                <label class="control-label"> Status </label>
+                                <div class="form-group">
+                                    {{Form::select('status',CommonWork::status(),[],['id'=>'dailyVisitStatus','class'=>'form-control','placeholder'=>'All Status'])}}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-2 col-lg-2">
-                            <div class="form-group">
-                                <label> Date To</label>
-                                {{Form::text('end_date','',['id'=>'endDate','class'=>'form-control singleDatePicker','placeholder'=>'Date to','required'=>true])}}
+                            <div class="col-md-2 col-lg-2">
+                                <div class="form-group">
+                                    <label> Date From</label>
+                                    {{Form::text('start_date','',['id'=>'startDate','class'=>'form-control singleDatePicker','placeholder'=>'Date from','required'=>true])}}
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2">
+                                <div class="form-group">
+                                    <label> Date To</label>
+                                    {{Form::text('end_date','',['id'=>'endDate','class'=>'form-control singleDatePicker','placeholder'=>'Date to','required'=>true])}}
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</label>
+                                    <button type="button" class="btn btn-primary" id="searchData"> Search </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-1">
-                            <div class="form-group">
-                                <label> &nbsp; </label>
-                                <button type="button" class="btn btn-primary" id="searchData"> Search </button>
-                            </div>
-                        </div>
+                        {!! Form::close() !!}
                     </div>
-                    {!! Form::close() !!}
+
                     <hr>
                 @endif
 
@@ -119,8 +123,12 @@
 
 </div>
     <!-- /.box-body -->
-<div id="companyVisitDetails" class="modal fade" role="dialog">
-</div>
+ <!-- first version development code -->
+<div id="companyVisitDetails" class="modal fade" role="dialog"></div>
+
+<!-- Second version development -->
+<div id="followUpDetails" class="modal fade" role="dialog"></div>
+
 
 
 @endsection
@@ -131,6 +139,7 @@
     $('#searchData').on('click',function () {
 
         var follow_up_by=$('#userId').val()
+        var status=$('#dailyVisitStatus').val()
         var start_date=$('#startDate').val()
         var end_date=$('#endDate').val()
 
@@ -162,7 +171,7 @@
             processing: true,
             serverSide: true,
             ordering: true,
-            ajax: '{{url('/show-company-visit-list?')}}'+'follow_up_by='+follow_up_by+'&start_date='+start_date+'&end_date='+end_date,
+            ajax: '{{url('/show-company-visit-list?')}}'+'follow_up_by='+follow_up_by+'&status='+status+'&start_date='+start_date+'&end_date='+end_date,
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 { data: 'Date'},
@@ -207,8 +216,18 @@
     });
 </script>
 
+
 <script>
-    function visitDetails(id) {
+    function dailyFollowUpDetails (followUpId) {
+        $('#followUpDetails').load('{{url("daily-follow-up-details-modal")}}'+'/'+followUpId);
+        $('#followUpDetails').modal('show')
+    }
+</script>
+
+
+
+<script>
+    function visitDetails(id) { // first development ----------
         $('#companyVisitDetails').load('{{url("company-visit-details-modal")}}'+'/'+id);
         $('#companyVisitDetails').modal('show')
     }

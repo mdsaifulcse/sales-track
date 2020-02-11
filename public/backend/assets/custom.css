@@ -61,6 +61,9 @@ li {
     color: #000;
     font-size: 16px;
 }
+label{
+    font-weight: 400;
+}
 
 .search-area label {
     cursor: pointer
@@ -152,18 +155,16 @@ li {
     border-left: 0px !important;
     margin-left: -4px;
 }
+.form-control{
+    border-color:#636163;
+}
 
 .box .box-header.box-danger {
     color: #fff;
     font-weight: 300 !important;
     font-size: 20px;
     padding: 1px 10px;
-    padding-top: 1px;
     padding-bottom: 6px;
-}
-
-.btn-primary {
-    background-color: #000000;
 }
 
 .card .card-btn {
@@ -739,6 +740,20 @@ label.coolboxx input:checked+.opt-serial-day:before {
     color: #000 !important;
 }
 
+.fixed .main-header{
+    background-color: #ff4500 !important;
+}
+.skin-black-light .main-header .navbar{
+    background-color: unset     ;
+}
+
+.skin-black-light .wrapper, .skin-black-light .main-sidebar, .skin-black-light .left-side{
+    background-color: #29618e !important;
+}
+.skin-black-light .sidebar-menu>li>a{
+    color: #ffffff!important;
+}
+
 .skin-black-light .sidebar-menu>li:hover>a {
     background: #e0e0e0
 }
@@ -850,4 +865,34 @@ ol.breadcrumb li:first-child a img {
     float: left;
     margin-top: -2px;
     margin-right: 4px;
+}
+
+/*  ============ ==============*/
+
+.admin-form{
+    background-color: #ececec;
+    padding: 15px;
+    border: 1px solid #ef01a5;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.63);
+    padding-bottom:0;
+}
+.footer-submit{
+    background-color: #e3effb;
+    padding: 12px 0px;
+    margin-bottom: 0;
+    border-top: 1px solid #000000;
+    padding-bottom: 12px;
+}
+/* Remove Arrow Form Number Type  Chrome, Safari, Edge, Opera */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance:textfield;
 }

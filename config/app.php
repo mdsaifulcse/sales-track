@@ -176,8 +176,11 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\OrganaizitionServiceProvider::class,
+        App\Providers\CommonWorkProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -231,6 +234,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'MyHelper' => \App\Providers\MyHelperProvider::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'CommonWork' => \App\Http\Controllers\Facades\CommonWorkFacades::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

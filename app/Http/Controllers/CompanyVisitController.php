@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\CompanyVisit;
+use App\Models\Designation;
 use App\Models\FollowUp;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator,Auth,DB;
 use Yajra\DataTables\DataTables;
@@ -29,7 +31,101 @@ class CompanyVisitController extends Controller
         return view('backend.company-visit.index',compact('authRole','users'));
     }
 
-    protected function showAllVisitedList(Request $request){
+
+    protected function showAllDailyReport(Request $request)
+    {
+        $dailyVisitData=CompanyVisit::leftJoin('follow_ups','follow_ups.company_visit_id','company_visits.id')
+            ->leftJoin('users','users.id','follow_ups.follow_up_by')
+            ->leftJoin('categories','categories.id','company_visits.category_id')
+            ->select('users.name','categories.category_name','company_visits.product_name','company_visits.visited_company',
+                'company_visits.visited_company_address','follow_ups.*')
+            ->orderBy('follow_ups.id','DESC')->orderBy('follow_ups.status','DESC')->orderBy('follow_ups.company_visit_id','DESC');
+
+        if (isset($request->follow_up_by) && $request->follow_up_by!=null){
+            $dailyVisitData=$dailyVisitData->where('follow_ups.follow_up_by',$request->follow_up_by);
+        }
+
+        if (isset($request->status) && $request->status!=null){
+            $dailyVisitData=$dailyVisitData->where('follow_ups.status',$request->status);
+        }
+
+        if (isset($request->start_date) && $request->start_date!=null && isset($request->end_date) && $request->end_date!=null){
+            $startDate=date('Y-m-d',strtotime($request->start_date));
+            $endDate=date('Y-m-d',strtotime($request->end_date));
+
+            $dailyVisitData=$dailyVisitData->whereBetween('follow_ups.follow_date',[$startDate, $endDate]);
+
+        }else if (isset($request->start_date) && $request->start_date!=null){
+            $followUpDate=date('Y-m-d',strtotime($request->start_date));
+            $dailyVisitData=$dailyVisitData->whereDate('follow_ups.follow_date', '>', $followUpDate);
+
+        }else if (isset($request->end_date) && $request->end_date!=null){
+            $followUpDate=date('Y-m-d',strtotime($request->end_date));
+            $dailyVisitData=$dailyVisitData->where('follow_ups.follow_date','<',$followUpDate);
+        }
+
+
+        return DataTables::of($dailyVisitData)
+            ->addIndexColumn()
+            ->addColumn('DT_RowIndex','')
+            ->addColumn('Date','<?php echo date(\'d-M-Y\',strtotime($follow_date))?>')
+            ->addColumn('Status','@if($status==1)
+                <span class="btn btn-default btn-xs"> Follow Up Need </span>
+        @elseif($status==2)
+        <span class="btn btn-warning btn-xs"> No Need Follow Up </span>
+        @elseif($status==3)
+        <span class="btn btn-warning btn-xs"> Need Quotation</span>
+        @elseif($status==4)
+        <span class="btn btn-primary btn-xs"> Quotation Submitted </span>
+        @elseif($status==5)
+        <span class="btn btn-danger btn-xs"> Fail to sale </span>
+        @elseif($status==6)
+        <span class="btn btn-success btn-xs"> Success to Sale </span>
+        @elseif($status==7)
+        <span class="btn btn-success btn-xs"> Technical Discussion </span>
+        @elseif($status==8)
+        <span class="btn btn-success btn-xs"> PI Needed </span>
+        @elseif($status==9)
+        <span class="btn btn-success btn-xs"> PI Submitted </span>
+        @elseif($status==10)
+        <span class="btn btn-success btn-xs">Draft LC Open </span>
+        @elseif($status==11)
+        <span class="btn btn-success btn-xs"> LC Open </span>
+        @endif')
+            ->addColumn('Action','
+                <div class="dropdown ">
+                  <button class="no-padding" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu action-dropdown " aria-labelledby="dLabel">
+                    <li><a href="javascript:void(0);" onclick="dailyFollowUpDetails({{$id}})" title="Click here to view Details" class="btn btn-primary btn-xs" >Details</a></li>
+                    <!--<li> <a  href="{{URL::to(\'company-visit/\'.$id)}}" title="Click here to view student information" class="btn btn-danger btn-xs" >Details</a></li>-->
+                    
+                    <li><a href="{{URL::to(\'client-follow-up/\'.$id)}}/edit" title="Click here to update information" class="btn btn-warning btn-xs" ><i class="fa fa-pencil no-margin"></i> Edit</a>
+                    </li>
+                    <li>
+                    @if($status!=11)
+        
+                    {!! Form::open(array(\'route\'=> [\'client-follow-up.destroy\',$id],\'method\'=>\'DELETE\',\'class\'=>\'deleteForm\',\'id\'=>"deleteForm$id")) !!}
+                        {{ Form::hidden(\'id\',$id)}}
+                        <button type="button" onclick=\'return deleteConfirm("deleteForm{{$id}}");\' class="deleteBtn btn btn-danger btn-xs">
+                          <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+                        </button>
+                    {!! Form::close() !!}
+                    @endif
+                    </li>
+                  
+                  </ul>
+                </div>
+            ')->rawColumns(['Date','Status','Action'])->toJson();
+
+}
+
+
+
+
+    protected function showAllVisitedListOld(Request $request){ // first development version ------
 
         $visitedData=CompanyVisit::leftJoin('follow_ups','follow_ups.company_visit_id','company_visits.id')
             ->leftJoin('users','users.id','follow_ups.follow_up_by')
@@ -65,13 +161,29 @@ class CompanyVisitController extends Controller
             ->addIndexColumn()
             ->addColumn('DT_RowIndex','')
             ->addColumn('Date','<?php echo date(\'d-M-Y\',strtotime($follow_date))?>')
-            ->addColumn('Status','@if($status==1)<span class="btn btn-info btn-xs">Follow Up Need </span>
-@elseif($status==2)<span class="btn btn-info btn-xs">No Need Follow Up</span>
-@elseif($status==3)
-<span class="btn btn-warning btn-xs">Need Quotation </span>
-@elseif($status==4)
-<span class="btn btn-primary btn-xs">Quotation Submitted</span>
- @endif ')
+            ->addColumn('Status','@if($status==1)
+                <span class="btn btn-default btn-xs"> Follow Up Need </span>
+                    @elseif($status==2)
+                    <span class="btn btn-warning btn-xs"> No Need Follow Up </span>
+                    @elseif($status==3)
+                    <span class="btn btn-warning btn-xs"> Need Quotation</span>
+                    @elseif($status==4)
+                    <span class="btn btn-primary btn-xs"> Quotation Submitted </span>
+                    @elseif($status==5)
+                    <span class="btn btn-danger btn-xs"> Fail to sale </span>
+                    @elseif($status==6)
+                    <span class="btn btn-success btn-xs"> Success to Sale </span>
+                    @elseif($status==7)
+                    <span class="btn btn-success btn-xs"> Technical Discussion </span>
+                    @elseif($status==8)
+                    <span class="btn btn-success btn-xs"> PI Needed </span>
+                    @elseif($status==9)
+                    <span class="btn btn-success btn-xs"> PI Submitted </span>
+                    @elseif($status==10)
+                    <span class="btn btn-success btn-xs">Draft LC Open </span>
+                    @elseif($status==11)
+                    <span class="btn btn-success btn-xs"> LC Open </span>
+        @endif')
     ->addColumn('Action','
             <div class="dropdown ">
   <button class="no-padding" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -79,9 +191,9 @@ class CompanyVisitController extends Controller
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu action-dropdown " aria-labelledby="dLabel">
-   @role(\'stuff\')
+   
     <li><a href="{{URL::to(\'client-follow-up/\'.$id)}}" title="Click here to follow up" class="btn btn-primary btn-xs" > Follow up </a></li>
-    @endRole
+    
     
     <li><a href="javascript:void(0);" onclick="visitDetails({{$id}})" title="Click here to view Details" class="btn btn-primary btn-xs" >Details</a></li>
     <!--<li> <a  href="{{URL::to(\'company-visit/\'.$id)}}" title="Click here to view student information" class="btn btn-danger btn-xs" >Details</a></li>-->
@@ -113,7 +225,16 @@ class CompanyVisitController extends Controller
     {
 
         $categories=Category::orderBy('id','desc')->pluck('category_name','id');
-        return view('backend.company-visit.create',compact('categories'));
+        $designations=Designation::orderBy('id','desc')->pluck('designation','id');
+
+
+        $users=User::leftJoin('role_user','role_user.user_id','users.id')
+            ->leftJoin('roles','roles.id','role_user.role_id')
+            ->select('users.id',DB::raw('CONCAT(users.name, " ( ", roles.name, " )") as userName'))
+            ->where('users.status',1)->where('roles.slug','=','stuff')
+            ->orderBy('users.id','desc')->pluck('userName','users.id');
+
+        return view('backend.company-visit.create',compact('categories','users','designations'));
     }
 
     /**
@@ -128,6 +249,7 @@ class CompanyVisitController extends Controller
             'visited_company' => 'required|max:200',
             'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
             'contact_email'  => "email|max:140",
+            'designation'  => "required|max:140",
             'category_id'  => "required|exists:categories,id",
             'product_name' => 'required|max:250',
             'discussion_summery' => 'required|max:499',
@@ -160,7 +282,14 @@ class CompanyVisitController extends Controller
 
             $input['follow_date']=isset($request->follow_date)?date('Y-m-d',strtotime($request->visited_date)):date('Y-m-d h:i:s');
 
-            $input['follow_up_by']=Auth::user()->id;
+            if(isset($request->follow_up_by) && $request->follow_up_by!='') {
+                $input['follow_up_by'] = $request->follow_up_by;
+                $input['visited_by']=$request->follow_up_by;
+            }else{
+                $input['follow_up_by'] = Auth::user()->id;
+                $input['visited_by']=Auth::user()->id;
+            }
+
             $input['created_by']=Auth::user()->id;
 
             if ($request->quotation_value==null){
@@ -172,6 +301,7 @@ class CompanyVisitController extends Controller
             $companyVisit=CompanyVisit::create($input);
             $input['company_visit_id']=$companyVisit->id;
             $input['follow_up_step']=1;
+            $input['latest']=1;
             FollowUp::create($input);
 
             DB::commit();
@@ -181,12 +311,18 @@ class CompanyVisitController extends Controller
             $bug=$e->errorInfo[1];
             $bug2=$e->errorInfo[1];
         }
-        if($bug==0){
-            return redirect()->back()->with('success','Data Successfully Saved');
-        }elseif($bug==1062){
-            return redirect()->back()->with('error','The Email has already been taken.');
+        if (\MyHelper::userRole()->role=='stuff'){
+            $redirect='/stuff-dashboard';
         }else{
-            return redirect()->back()->with('error','Something Error Found ! '.$bug2);
+            $redirect='/company-visit';
+        }
+
+        if($bug==0){
+            return redirect($redirect)->with('success','Data Successfully Saved');
+        }elseif($bug==1062){
+            return redirect($redirect)->with('error','The Email has already been taken.');
+        }else{
+            return redirect($redirect)->with('error','Something Error Found ! '.$bug2);
         }
     }
 
@@ -221,7 +357,8 @@ class CompanyVisitController extends Controller
           }
 
         $categories=Category::orderBy('id','desc')->pluck('category_name','id');
-        return view('backend.company-visit.edit',compact('categories','companyVisit'));
+        $designations=Designation::orderBy('id','desc')->pluck('designation','id');
+        return view('backend.company-visit.edit',compact('categories','companyVisit','designations'));
     }
 
     /**
@@ -239,6 +376,7 @@ class CompanyVisitController extends Controller
             'visited_company' => 'required|max:200',
             'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
             'contact_email'  => "email|max:140",
+            'designation'  => "required|max:140",
             'category_id'  => "required|exists:categories,id",
             'product_name' => 'required|max:250',
             'discussion_summery' => 'required|max:499',

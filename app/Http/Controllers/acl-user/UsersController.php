@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\CompanyVisit;
 use App\Models\Designation;
+use App\Models\FollowUp;
 use App\Models\UserInfo;
 use Carbon\Carbon;
 use FontLib\Table\Type\hhea;
@@ -290,6 +292,16 @@ class UsersController extends Controller
 
         DB::beginTransaction();
         try {
+
+//            $followUpData=FollowUp::where('follow_up_by',$userData->id)->get();
+//            foreach ($followUpData as $data){
+//                $data->delete();
+//            }
+//
+//            $visit=CompanyVisit::where(['id'=>$followUpData[0]->company_visit_id])->delete();
+//            $visit=CompanyVisit::where(['updated_by'=>$userData->id])->delete();
+//            $visit=CompanyVisit::where(['created_by'=>$userData->id])->delete();
+
             $userInfo=UserInfo::where('user_id',$userData->id)->delete();
             $userData->delete();
 

@@ -12,9 +12,9 @@ function photoLoad(input,image_load) {
       }
   }
 
-$('.select').chosen({
-    width:'100%',
-});
+// $('.select').chosen({
+//     width:'100%',
+// });
 function loadPhoto(input,id) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();

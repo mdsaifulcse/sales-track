@@ -63,7 +63,7 @@
                                             <label class="j-icon-right" for="phone">
                                                 <i class="fa fa-phone"></i>
                                             </label>
-                                            <input type="text" value="{{$data->mobile_no}}" id="phone" name="mobile_no" readonly>
+                                            <input type="text" value="{{$data->mobile}}" id="phone" name="mobile_no" readonly>
                                             <span class="j-tooltip j-tooltip-right-top">Mobile Number</span>
                                         </div>
                                     </div>

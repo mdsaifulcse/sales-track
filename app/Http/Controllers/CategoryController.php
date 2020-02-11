@@ -147,7 +147,7 @@ class CategoryController extends Controller
 
         if($bug == 0){
             return redirect()->back()->with('success','Category Info Delete Successfully.');
-        }elseif ($bug==547){
+        }elseif ($bug==1451){
             return redirect()->back()->with('error','Sorry This date can not be delete due to used another module.');
         }else{
             return redirect()->back()->with('error','Error: '.$bug1);

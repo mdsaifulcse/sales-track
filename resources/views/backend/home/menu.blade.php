@@ -116,6 +116,7 @@
     $colorIcon = ['#1f6fd2','#4fbebd','#ff7b49','#05b502','#9ba502'];
     ?>
     <div class="main-dashboard-content">
+
         @foreach($menus as $key => $menu)
         @canAtLeast(json_decode($menu->slug,true))
             <?php

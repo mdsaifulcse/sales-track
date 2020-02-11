@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> {{$info->company_name}} </title>
+    <title> {{$info->company_name}} APP | LOGIN </title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="{{asset('/')}}images/logo/favicon.png"/>
+    {{--<link rel="icon" type="image/png" href="{{asset('/')}}images/logo/favicon.png"/>--}}
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{asset('/')}}backend/login/css/util.css">
     <link rel="stylesheet" type="text/css" href="{{asset('/')}}backend/login/css/main.css">
@@ -33,7 +33,7 @@
         }
     </style>
 </head>
-<body style="background:#ec2c22; background-repeat: no-repeat; background-attachment: fixed; background-position: center center;background-size:100%">
+<body style="background:#10012bc4; background-repeat: no-repeat; background-attachment: fixed; background-position: center center;background-size:100%">
 <div class="limiter">
     <div class="container-login100">
         @yield('content')

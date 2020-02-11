@@ -17,7 +17,7 @@
 				<div class="box-header bg-red with-border">
 					Password Change for {{$data->name}}
 					<div class="card-btn pull-right">
-						<a href="{{URL::to('all-users')}}" class="btn btn-primary btn-sm" > <i class="fa fa-list"></i>All Admin</a>
+						<a href="{{URL::to('all-users')}}" class="btn btn-primary btn-sm" > <i class="fa fa-list"></i> All User</a>
 					</div>
 				</div>
 				<div class="box-body">

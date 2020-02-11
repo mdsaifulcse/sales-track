@@ -11,11 +11,7 @@
 
 @section('content')
     <style>
-        .admin-form{
-            background-color: #ececec;
-            padding: 15px;
-            border: 1px solid #a20990;
-        }
+
     </style>
 
 <div class="content">
@@ -63,7 +59,7 @@
                         </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="contact_name" class="col-form-label text-md-right">{{ __('Contact Person Name') }} <sup class="text-danger">*</sup></label>
 
@@ -79,7 +75,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="mobile_no" class="col-form-label text-md-right">{{ __('Contact Person Mobile') }} <sup class="text-danger">*</sup></label>
 
@@ -96,7 +92,7 @@
                         </div>
 
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="email" class="col-form-label text-md-right">{{ __('Contact Person Email') }}</label>
                                 <input id="email" type="email" class="form-control{{ $errors->has('contact_email') ? ' is-invalid' : '' }}" required name="contact_email" value="{{ $companyVisit->companyVisitFollowUp->contact_email }}" placeholder="Enter valid email">
@@ -107,6 +103,17 @@
                                     </span>
                                 @endif
                             </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="designation_id" class="col-form-label text-md-right">{{ __('Designation') }} <sup class="text-danger">*</sup></label>
+
+                            {{Form::text('designation',$companyVisit->designation,['class'=>'form-control ','required','placeholder'=>'Contact Person Designation'])}}
+
+                            @if ($errors->has('designation'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('designation') }}</strong>
+                                </span>
+                            @endif
                         </div>
                     </div>
 
@@ -194,7 +201,7 @@
 
                         <div class="col-md-3" style="@if($companyVisit->status==4)display: block @else display: none @endif">
                             <label class="" title="">Quotation Value <sup class="text-danger">*</sup></label>
-                            {{Form::number('quotation_value',$value=$companyVisit->companyVisitFollowUp->quotation_value,['id'=>'quotationValue','class'=>'form-control select','min'=>0,'max'=>99999999,'placeholder'=>'Enter quotation value'])}}
+                            {{Form::number('quotation_value',$value=$companyVisit->companyVisitFollowUp->quotation_value,['id'=>'quotationValue','class'=>'form-control select','min'=>0,'max'=>999999999,'placeholder'=>'Enter quotation value'])}}
                             @if ($errors->has('quotation_value'))
                                 <span class="help-block">
                                     <small class="text-danger">{{ $errors->first('quotation_value') }}</small>
@@ -219,13 +226,16 @@
                     </div>
 
 
-                    <div class="form-group row mb-0">
-                        <div class="col-md-10">
-                            <button type="submit" class="btn btn-danger">
-                                {{ __('Update') }}
-                            </button>
-                        </div>
+                <div class="form-group row mb-0 footer-submit">
+                    <div class="col-md-12">
+
+                        <a href="{{URL::to('/company-visit')}}" class="btn btn-danger bnt-sm"> CANCEL</a>
+
+                        <button type="submit" class="btn btn-primary pull-right" onclick="return confirm('Are you sure, Everything is correct? ')">
+                            {{ __('UPDATE') }}
+                        </button>
                     </div>
+                </div>
                     {{Form::close()}}
                 </div>
         </div>

@@ -88,7 +88,7 @@ $color = ['#1f6fd2','#4fbebd','#f93535','#05b502','#9ba502'];
 
     </div>
     <!-- /.sidebar -->
-    <script src="{{asset('public/backend/assets/jquery.min.js')}}"></script>
+    <script src="{{asset('backend/assets/jquery.min.js')}}"></script>
     <script>
         $('.parent-menu').each(function(){
             var root = "{{url('/')}}"

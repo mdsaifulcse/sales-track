@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use Validator;
+use MyHelper,Validator;
 use App\Models\PrimaryInfo;
 
 class PrimaryInfoController extends Controller
@@ -89,8 +89,17 @@ class PrimaryInfoController extends Controller
                 $constraint->aspectRatio();
             });
             $img->save('images/logo/logo.png');
-            $input['logo']='images/logo/logo.png';
+            //$input['logo']='images/logo/logo.png';
         }
+
+        if ($request->hasFile('logo')){
+            $input['logo']=MyHelper::photoUpload($request->file('logo'),'images/company-logo/',240);
+
+            if (file_exists($data->logo)){
+                unlink($data->logo);
+            }
+        }
+
 
         if ($request->hasFile('logo_ban')) {
             $photo=$request->file('logo_ban');
