@@ -99,11 +99,16 @@
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     <!-- Messages: style can be found in dropdown.less-->
-
-                    <!-- User Account: style can be found in dropdown.less -->
-                    <li class="top-logout hidden">
-                    <a href="{{url('/logout')}}" ><i class="fa fa-sign-out"></i><b> Logout s</b></a>
+                    @if($borrowRepayRequestNotification>0)
+                    <li class="top-logout ">
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" style="color: #ffc107;"><i class="fa fa-bell"></i> {{$borrowRepayRequestNotification}}</a>
+                        <ul class="dropdown-menu profile-dropdown">
+                            <!-- User image -->
+                            <li><a href="{{url('/borrow-repay-request')}}" class=""> {{$borrowRepayRequestNotification}} Pending Transaction Request</a></li>
+                        </ul>
                     </li>
+                    @endif
+
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 

@@ -247,7 +247,7 @@ class CompanyVisitController extends Controller
     {
         $validateFields=[
             'visited_company' => 'required|max:200',
-            'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
+            'contact_mobile'  => "required|min:8|max:50",
             'contact_email'  => "email|max:140",
             'designation'  => "required|max:140",
             'category_id'  => "required|exists:categories,id",
@@ -374,7 +374,7 @@ class CompanyVisitController extends Controller
 
         $validateFields=[
             'visited_company' => 'required|max:200',
-            'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
+            'contact_mobile'  => "required|min:8|max:50",
             'contact_email'  => "email|max:140",
             'designation'  => "required|max:140",
             'category_id'  => "required|exists:categories,id",

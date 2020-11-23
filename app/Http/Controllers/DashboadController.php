@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyVisit;
 use App\Models\FollowUp;
+use App\Models\MoneyAssignToEmp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
@@ -25,6 +26,59 @@ class DashboadController extends Controller
     protected $followStatus='';
 
     public function dashboard(Request $request){
+
+       $yearlyIncomeExpense=MoneyAssignToEmp::whereYear('assign_date',date('Y'))->whereNotIn('type',['Borrow','Repay'])
+           ->select(DB::raw("DATE_FORMAT(assign_date, '%M-%Y') m"),DB::raw('sum(amount) as e'))
+        ->orderBy('id','DESC')->groupBy('m')->get();
+
+       $monthArr=[];
+
+        if (count($yearlyIncomeExpense)>0){
+            foreach ($yearlyIncomeExpense as $ky=>$investMonth){
+                array_push($monthArr,date('n',strtotime($investMonth->m)));
+            }
+
+        }
+        $mn=0;
+        if (count($yearlyIncomeExpense)>0){
+            $mn=date('n',strtotime($yearlyIncomeExpense[0]->m));
+        }
+
+        foreach ($yearlyIncomeExpense as $key=>$assignAmount){
+
+            if($key==0) {
+                        $k=1;
+                    for ($mn;  $mn>=$k; $mn--) {
+
+                    if (!in_array($mn, $monthArr)) {
+                        $yearlyIncomeExpense[] = [
+                            'm' => date('F',mktime(0, 0, 0, $mn)) . '-' . date('Y'),
+                            'e' => 0,
+                            'i' => 0,
+                            'pl' => 0,
+                        ];
+
+                    } else {
+
+                        $monthlyIncome = CompanyVisit::join('follow_ups', 'follow_ups.company_visit_id', 'company_visits.id')
+                            ->where('company_visits.status', 11)
+                            ->whereMonth('follow_ups.follow_date', date('m', strtotime($assignAmount->m)))
+                            ->whereYear('follow_ups.follow_date', date('Y', strtotime($assignAmount->m)))->sum('company_visits.profit_value_tk');
+                        $yearlyIncomeExpense[$key]['i'] = $monthlyIncome;
+                        // profit loss calculation ------ pl=profit/loss
+                        $yearlyIncomeExpense[$key]['pl'] = $yearlyIncomeExpense[$key]['i'] - $assignAmount->e;
+                    }
+
+                } // end for
+
+            } // end if
+
+
+
+        }
+
+
+
         $this->followStatus=CommonWork::status();
          $roleId =0;
          if($roleId==4){
@@ -59,6 +113,12 @@ class DashboadController extends Controller
         $totalVisitData=[];
         $totalVisitData=array_pad($totalVisitData,count($followUpStatusCount),$totalVisit);
 
+        $moneyAssignUsers=User::join('money_assign_to_emps','money_assign_to_emps.user_id','users.id')
+                                ->leftJoin('role_user','role_user.user_id','users.id')
+                                ->leftJoin('roles','roles.id','role_user.role_id')
+                                ->select('users.id',DB::raw('CONCAT(users.name, " ( ", roles.name, " )") as userName'))
+                                ->where('users.status',1)->where('roles.slug','=','stuff')
+                                ->orderBy('users.id','desc')->pluck('userName','users.id');
 
         $users=User::leftJoin('role_user','role_user.user_id','users.id')
             ->leftJoin('roles','roles.id','role_user.role_id')
@@ -69,7 +129,7 @@ class DashboadController extends Controller
 
         $lcOpens=FollowUp::leftJoin('company_visits','follow_ups.company_visit_id','company_visits.id')
             ->select('company_visits.product_name','company_visits.visited_company','company_visits.status',
-            'company_visits.quotation_value','company_visits.profit_value','company_visits.profit_percent','company_visits.id')
+            'company_visits.quotation_value','company_visits.profit_value','company_visits.profit_percent','company_visits.currency_rate','company_visits.profit_value_tk','company_visits.id')
             ->where(['follow_ups.status'=>11,'latest'=>1])->whereMonth('follow_date',date('m'))->get();
 
         $followStatus=$this->followStatus;
@@ -90,7 +150,95 @@ class DashboadController extends Controller
             }
         }
 
-        return view('backend.dashboard.index',compact('request','followStatus','statusNames','totalVisitData','followUpStatusCount','profitMonth','profitValue','users','lcOpens'));
+        return view('backend.dashboard.index',compact('moneyAssignUsers','yearlyIncomeExpense','request','followStatus','statusNames',
+            'totalVisitData','followUpStatusCount','profitMonth','profitValue','users','lcOpens'));
+    }
+
+    protected function searchProfitBarChartData(Request $request){
+
+
+        $yearlyIncomeExpense=MoneyAssignToEmp::whereNotIn('type',['Borrow','Repay'])
+            ->select(DB::raw("DATE_FORMAT(assign_date, '%M-%Y') m"),DB::raw('sum(amount) as e'))
+            ->orderBy('id','DESC')->groupBy('m');
+
+        if ($request->start_date!='' && $request->end_date!=''){
+            $startDate=date('Y-m-d',strtotime($request->start_date));
+            $endDate=date('Y-m-d',strtotime($request->end_date));
+
+            $yearlyIncomeExpense=$yearlyIncomeExpense->whereBetween('assign_date',[$startDate,$endDate]);
+        }else{
+            $yearlyIncomeExpense=$yearlyIncomeExpense->whereYear('assign_date',date('Y'));
+        }
+
+
+
+        if (isset($request->user_id) && $request->user_id!=0){
+            $yearlyIncomeExpense=$yearlyIncomeExpense->where('user_id',$request->user_id);
+        }
+        $yearlyIncomeExpense=$yearlyIncomeExpense->get();
+
+        $monthArr=[];
+
+        if (count($yearlyIncomeExpense)>0){
+            foreach ($yearlyIncomeExpense as $ky=>$investMonth){
+                array_push($monthArr,date('n',strtotime($investMonth->m)));
+            }
+
+        }
+        $mn=0;
+        if (count($yearlyIncomeExpense)>0){
+            $mn=date('n',strtotime($yearlyIncomeExpense[0]->m));
+        }
+
+        foreach ($yearlyIncomeExpense as $key=>$assignAmount){
+
+
+            if($key==0) {
+                //for ($k = 1; $mn > $k; $k++) {
+                $k=1;
+                for ($mn;  $mn>=$k; $mn--) {
+
+                    if (!in_array($mn, $monthArr)) {
+                        $yearlyIncomeExpense[] = [
+                            'm' => date('F',mktime(0, 0, 0, $mn)) . '-' . date('Y'),
+                            'e' => 0,
+                            'i' => 0,
+                            'pl' => 0,
+                        ];
+
+                    } else {
+
+                        $monthlyIncome=CompanyVisit::join('follow_ups','follow_ups.company_visit_id','company_visits.id')
+                            ->where('company_visits.status',11)
+                            ->whereMonth('follow_ups.follow_date',date('m',strtotime($assignAmount->m)))
+                            ->whereYear('follow_ups.follow_date',date('Y',strtotime($assignAmount->m)))->sum('company_visits.profit_value_tk');
+                        $yearlyIncomeExpense[$key]['i']=$monthlyIncome;
+
+                        $yearlyIncomeExpense[$key]['pl']=$yearlyIncomeExpense[$key]['i']-$assignAmount->e;
+                    }
+
+                } // end for
+            } // end if
+
+
+
+
+
+//            if (isset($request->user_id) && $request->user_id!=0){
+//                $monthlyIncome=CompanyVisit::join('follow_ups','follow_ups.company_visit_id','company_visits.id')
+//                    ->where('company_visits.status',11)->where('company_visits.visited_by',$request->user_id)
+//                    ->whereMonth('follow_ups.follow_date',date('m',strtotime($assignAmount->m)))
+//                    ->whereYear('follow_ups.follow_date',date('Y',strtotime($assignAmount->m)))->sum('company_visits.profit_value_tk');
+//                $yearlyIncomeExpense[$key]['i']=$monthlyIncome;
+//                $yearlyIncomeExpense[$key]['pl']=$yearlyIncomeExpense[$key]['i']-$assignAmount->e;
+//            }
+
+
+        }
+
+      //return $yearlyIncomeExpense;
+
+        return response()->json(['yearlyIncomeExpense'=>$yearlyIncomeExpense]);
     }
 
 
@@ -146,7 +294,7 @@ class DashboadController extends Controller
     }
 
 
-    public function getProfitChartData(Request $request){
+    public function getCommissionChartData(Request $request){
 
         if (isset($request->user_id)){
             $this->userId=$request->user_id;
@@ -192,7 +340,7 @@ class DashboadController extends Controller
 
         $lcOpens=FollowUp::leftJoin('company_visits','follow_ups.company_visit_id','company_visits.id')
             ->select('company_visits.product_name','company_visits.visited_company','company_visits.status',
-                'company_visits.quotation_value','company_visits.profit_value','company_visits.profit_percent','company_visits.id')
+                'company_visits.quotation_value','company_visits.profit_value','company_visits.profit_percent','company_visits.currency_rate','company_visits.profit_value_tk','company_visits.id')
             ->where(['follow_ups.status'=>11,'latest'=>1])->whereBetween('follow_date',[$this->startDate,$this->endDate]);
 
         if ($this->userId!=0){
@@ -217,12 +365,17 @@ class DashboadController extends Controller
             return redirect()->back()->with('error','Al least one Commission must to set');
         }
 
+        //return $request;
 
         if (isset($request->id) && count($request->id)>0){
             foreach ($request->id as $key=>$id){
                 $companyVisit=CompanyVisit::findOrFail($id);
                 $companyVisit->update(
-                    ['profit_percent'=>$request->profit_percent[$id],'profit_value'=>$request->profit_value[$id]]
+                    ['profit_percent'=>$request->profit_percent[$id],
+                        'profit_value'=>$request->profit_value[$id],
+                        'currency_rate'=>$request->currency_rate[$id],
+                        'profit_value_tk'=>$request->profit_value_tk[$id],
+                    ]
                 );
             }
         }

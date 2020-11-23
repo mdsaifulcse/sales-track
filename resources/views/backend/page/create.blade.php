@@ -88,6 +88,7 @@
                 <b>OR</b>
             </div>
         </div>
+
         <div class="form-group">
             {{Form::label('description', 'Description', array('class' => 'col-md-3 control-label'))}}
             <div class="col-md-8">

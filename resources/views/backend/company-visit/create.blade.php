@@ -99,7 +99,7 @@
                                 <label for="mobile_no" class="col-form-label text-md-right">{{ __('Contact Person Mobile') }} <sup class="text-danger">*</sup></label>
 
                                 <div class="">
-                                    <input id="mobile_no" type="number" min="0" class="form-control{{ $errors->has('contact_mobile') ? ' is-invalid' : '' }}" name="contact_mobile" value="{{ old('contact_mobile') }}" required placeholder="Enter valid mobile">
+                                    <input id="mobile_no" type="text" min="0" class="form-control{{ $errors->has('contact_mobile') ? ' is-invalid' : '' }}" name="contact_mobile" value="{{ old('contact_mobile') }}" required placeholder="Enter valid mobile">
 
                                     @if ($errors->has('contact_mobile'))
                                         <span class="invalid-feedback" role="alert">

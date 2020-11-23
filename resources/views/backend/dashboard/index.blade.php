@@ -35,9 +35,70 @@
             }
         </style>
 
+
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="box box-primary ">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Monthly ( {{date('M-Y')}} ) Profit Summary  </h3>
+
+                        <div class="box-tools pull-right">
+                            <span class="branch-indicate"> <i class="fa fa-square" aria-hidden="true" style="color:#949596"></i> Expense </span>
+                            <span class="branch-indicate"> <i class="fa fa-square" aria-hidden="true" style="color:#097abb"></i> Income </span>
+                            |
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            {{--<div class="col-md-3 col-lg-3">--}}
+                                {{--<label class="control-label"> Select User </label>--}}
+                                {{--<div class="form-group">--}}
+                                    {{--{{Form::select('follow_up_by',$moneyAssignUsers,[],['id'=>'userIdProfit','class'=>'form-control','placeholder'=>'-All Users-','required'=>true])}}--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+
+                            <div class="col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label> Date From</label>
+                                    {{Form::text('start_date','',['id'=>'startDateProfit','class'=>'form-control singleDatePicker','autoComplete'=>'off','placeholder'=>'Date from','required'=>true])}}
+                                    <span class="startDateProfit text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label> Date To</label>
+                                    {{Form::text('end_date','',['id'=>'endDateProfit','class'=>'form-control singleDatePicker','placeholder'=>'Date to','required'=>true])}}
+                                    <span class="endDateProfit text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</label>
+                                    <button type="button" class="btn btn-success" id="searchProfitChartData"> Search Profit </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profit-bar-chart">
+                            <div id="profit-bar-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+
+        </div><!-- end row -->
+
+
+        <div class="row">
+
+            <div class="col-md-6"><!--status bar-->
                 <div class="box box-warning ">
                     <div class="box-header with-border">
                         <h3 class="box-title">Monthly ( {{date('M-Y')}} ) Status Bar  </h3>
@@ -64,7 +125,7 @@
                             <div class="col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <label> Date From</label>
-                                    {{Form::text('start_date','',['id'=>'startDate','class'=>'form-control singleDatePicker','placeholder'=>'Date from','required'=>true])}}
+                                    {{Form::text('start_date','',['id'=>'startDate','class'=>'form-control singleDatePicker','autoComplete'=>'off','placeholder'=>'Date from','required'=>true])}}
                                     <span class="startDate text-danger"></span>
                                 </div>
                             </div>
@@ -95,7 +156,7 @@
             <div class="col-md-6">
                 <div class="box box-success">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Profit Summary  </h3>
+                        <h3 class="box-title">Commission Summary  </h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -109,7 +170,7 @@
                             <div class="col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <label> Date From</label>
-                                    {{Form::text('start_date','',['id'=>'pstartDate','class'=>'form-control singleDatePicker','placeholder'=>'Date from','required'=>true])}}
+                                    {{Form::text('start_date','',['id'=>'pstartDate','class'=>'form-control singleDatePicker','autoComplete'=>'off','placeholder'=>'Date from','required'=>true])}}
                                     <span class="pstartDate text-danger"></span>
                                 </div>
                             </div>
@@ -125,13 +186,13 @@
                             <div class="col-md-1">
                                 <div class="form-group">
                                     <label> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</label>
-                                    <button type="button" class="btn btn-success" id="searchProfitChartData"> Search </button>
+                                    <button type="button" class="btn btn-success" id="searchCommissionChartData"> Search </button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="areaChart">
-                            <canvas id="areaChart" style="height: 230px; width: 510px;" ></canvas>
+                            <canvas id="commissionChart" style="height: 230px; width: 510px;" ></canvas>
                         </div>
 
                     </div>
@@ -139,8 +200,8 @@
 
                 </div>
 
-            </div>
-        </div>
+            </div> <!-- end col-md-6 -->
+        </div><!-- end row -->
 
         {{--Commission & Profit Set--}}
         <div class="row ">
@@ -161,7 +222,7 @@
                                 <div class="col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label> Date From</label>
-                                        {{Form::text('start_date','',['id'=>'cstartDate','class'=>'form-control singleDatePicker','placeholder'=>'Date from','required'=>true])}}
+                                        {{Form::text('start_date','',['id'=>'cstartDate','class'=>'form-control singleDatePicker','autoComplete'=>'off','placeholder'=>'Date from','required'=>true])}}
                                         <span class="cstartDate text-danger"></span>
                                     </div>
                                 </div>
@@ -169,7 +230,7 @@
                                 <div class="col-md-3 col-lg-3">
                                     <div class="form-group">
                                         <label> Date To</label>
-                                        {{Form::text('end_date','',['id'=>'cendDate','class'=>'form-control singleDatePicker','placeholder'=>'Date to','required'=>true])}}
+                                        {{Form::text('end_date','',['id'=>'cendDate','class'=>'form-control singleDatePicker','placeholder'=>'Date to','autoComplete'=>'off','required'=>true])}}
                                         <span class="cendDate text-danger"></span>
                                     </div>
                                 </div>
@@ -200,13 +261,16 @@
                                     <th>Status</th>
                                     <th>Company</th>
                                     <th>Product</th>
-                                    <th>Sale Price.Tk</th>
-                                    <th width="10%">Commission % </th>
-                                    <th width="15%">Profit Value </th>
+                                    <th>Sale Price</th>
+                                    <th width="10%">Commission %</th>
+                                    <th width="15%">Commission Value</th>
+                                    <th width="10%">Currency Rate</th>
+                                    <th width="10%">Profit in Tk</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
+                                <?php $totalCommission=0; ?>
                                 <?php $totalProfit=0; ?>
                                 @foreach($lcOpens as $lcOpen)
                                 <tr>
@@ -219,15 +283,27 @@
                                     <td>
                                     <input type="number" step="any" name="profit_percent[{{$lcOpen->id}}]" value="{{$lcOpen->profit_percent==0?'':$lcOpen->profit_percent}}" id="commission_{{$lcOpen->id}}" onkeyup="profitCalculate({{$lcOpen->id}})" @if($lcOpen->profit_percent>0)  @else readonly @endif  class="form-control">
                                     </td>
+
                                     <td>
-                                        <input type="number" name="profit_value[{{$lcOpen->id}}]" value="{{$lcOpen->profit_value==0?'':$lcOpen->profit_value}}" id="profit_{{$lcOpen->id}}" readonly class="form-control profit-value">
+                                        <input type="number" name="profit_value[{{$lcOpen->id}}]" value="{{$lcOpen->profit_value==0?'':$lcOpen->profit_value}}" id="commissionValue_{{$lcOpen->id}}" readonly class="form-control commission-value">
+                                    </td>
+
+                                    <td>
+                                        <input type="number" name="currency_rate[{{$lcOpen->id}}]" value="{{$lcOpen->currency_rate==0?'':$lcOpen->currency_rate}}" id="currency_{{$lcOpen->id}}" onkeyup="profitCalculate({{$lcOpen->id}})" class="form-control currency-rate">
+                                    </td>
+                                    <td>
+                                        <input type="number" name="profit_value_tk[{{$lcOpen->id}}]" value="{{$lcOpen->profit_value_tk==0?'':$lcOpen->profit_value_tk}}" id="currencyTk_{{$lcOpen->id}}"  class="form-control profit-tk">
                                     </td>
                                 </tr>
                                     <?php $totalProfit+=$lcOpen->profit_value; ?>
+                                    <?php $totalCommission+=$lcOpen->profit_value_tk; ?>
                                     @endforeach
                                 <tr>
-                                    <th colspan="5" class="text-right">Total Profit = </th>
-                                    <td><input type="number" name="" value="{{$totalProfit}}" id="totalProfit" class="form-control" required ></td>
+                                    <th colspan="5" class="text-right">Total Commission = </th>
+                                    <td><input type="number" name="" value="{{$totalProfit}}" id="totalCommission" class="form-control" required ></td>
+
+                                    <th colspan="" class="text-right">Total Profit = </th>
+                                    <td><input type="number" name="" value="{{$totalCommission}}" id="totalProfit" class="form-control" required ></td>
                                 </tr>
 
                                 </tbody>
@@ -253,6 +329,74 @@
 @endsection
 
 @section('script')
+
+    {{--Profit Bar Chart --}}
+
+    <script>
+        $(function () {
+            //Profit BAR CHART
+            var bar = new Morris.Bar({
+                element: 'profit-bar-chart',
+                resize: true,
+                data: <?php echo json_encode($yearlyIncomeExpense);?>,
+                barColors: [ '#f56954','#00a65a','#cb0e91'],
+                xkey: 'm',
+                ykeys: ['e','i','pl'],
+                labels: ['Investment','Income','Profit/Loss'],
+                hideHover: 'auto'
+            });
+        });
+    </script>
+
+   {{--Search Profit Bar Chart--}}
+
+    <script>
+
+        $('#searchProfitChartData').on('click',function () {
+            var start_date = $('#startDateProfit').val()
+            var end_date = $('#endDateProfit').val()
+
+
+            if (start_date == '') {
+                $('.startDateProfit').html('Date From is required')
+            } else {
+                $('.startDateProfit').html('')
+            }
+
+            if (end_date == '') {
+                $('.endDateProfit').html('Date To is required')
+            } else {
+                $('.endDateProfit').html('')
+            }
+
+            if (startDate == '' || endDate == '') {
+                return false
+            }else{
+
+            $.get('{{URL::to("profit-bar-data")}}' + '?start_date=' + start_date + '&end_date=' + end_date, function (data, status) {
+
+                $('.profit-bar-chart').html('')
+                $('.profit-bar-chart').html('<div id="profit-bar-chart" style="height: 300px;"></div>')
+
+                var bar = new Morris.Bar({
+                    element: 'profit-bar-chart',
+                    resize: true,
+                    data: data.yearlyIncomeExpense,
+                    barColors: ['#f56954', '#00a65a', '#cb0e91'],
+                    xkey: 'm',
+                    ykeys: ['e', 'i', 'pl'],
+                    labels: ['Investment', 'Income', 'Profit/Loss'],
+                    hideHover: 'auto'
+                    });
+                });
+            }
+        })
+
+    </script>
+
+
+
+
     {{--Status Bar Chart--}}
     <script type="text/javascript">
 
@@ -426,11 +570,11 @@
     </script>
 
 
-    {{--Profit Area Chart--}}
+    {{-- Commission Area Chart--}}
     <script>
         $(function () {
 
-            var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+            var areaChartCanvas = $('#commissionChart').get(0).getContext('2d')
             // This will get the first returned node in the jQuery collection.
             var areaChart       = new Chart(areaChartCanvas)
 
@@ -438,7 +582,7 @@
                 labels  : <?php echo json_encode($profitMonth)?>,
                 datasets: [
                     {
-                        label               : 'Profit Value',
+                        label               : 'Commission Value',
                         fillColor           : 'rgba(60,141,188,0.9)',
                         strokeColor         : 'rgba(60,141,188,0.8)',
                         pointColor          : '#3b8bba',
@@ -497,7 +641,7 @@
 
 
 <script>
-    $('#searchProfitChartData').on('click',function () {
+    $('#searchCommissionChartData').on('click',function () {
 
         var userId=$('#puserId').val()
         var startDate=$('#pstartDate').val()
@@ -522,17 +666,17 @@
         if(startDate=='' || endDate==''){
             return false
         }else {
-            $.get('{{URL::to("profit-chart-data")}}'+'?user_id='+userId+'&start_date='+startDate+'&end_date='+endDate, function (data,status) {
+            $.get('{{URL::to("commission-chart-data")}}'+'?user_id='+userId+'&start_date='+startDate+'&end_date='+endDate, function (data,status) {
 
 
 
                 $(function () {
 
                     $('.areaChart').html('')
-                    $('.areaChart').html('<canvas id="areaChart" style="height: 230px; width: 510px;" ></canvas>')
+                    $('.areaChart').html('<canvas id="commissionChart" style="height: 230px; width: 510px;" ></canvas>')
                     var profitMonth=data.profitMonth
                     var profitValue=data.profitValue
-                    var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+                    var areaChartCanvas = $('#commissionChart').get(0).getContext('2d')
                     // This will get the first returned node in the jQuery collection.
                     var areaChart       = new Chart(areaChartCanvas)
 
@@ -540,7 +684,7 @@
                         labels  : profitMonth,
                         datasets: [
                             {
-                                label               : 'Profit Value',
+                                label               : 'Commission Value',
                                 fillColor           : 'rgba(60,141,188,0.9)',
                                 strokeColor         : 'rgba(60,141,188,0.8)',
                                 pointColor          : '#3b8bba',
@@ -607,6 +751,7 @@
         function openCommission(id) {
             if($('#id_'+id).is(":checked") ){
                 $('#commission_'+id).attr('readonly',false)
+                $('#currency_'+id).attr('readonly',false)
                 $('#commission_'+id).attr('required',true)
                 $('#profit_'+id).attr('required',true)
             }else {
@@ -617,10 +762,12 @@
 
 
                 $('#commission_'+id).attr('readonly',true)
+                $('#currency_'+id).attr('readonly',true)
                 $('#commission_'+id).attr('required',false)
                 $('#profit_'+id).attr('required',false)
 
                 $('#commission_'+id).val('')
+                $('#currency_'+id).val('')
                 $('#profit_'+id).val('')
             }
         }
@@ -629,30 +776,57 @@
         function profitCalculate(id) {
 
             function commissionCalculate(callback) {
+
+                // commission ------
                 var commissionPercent=$('#commission_'+id).val()
                 if (commissionPercent==''){
                     commissionPercent=0
                 }
                 var saleValue=$('#saleValue_'+id).html()
-                var profit=((saleValue*commissionPercent)/100).toFixed(1)
-                if (profit==0.0){
-                    profit=0
+                var commission=((saleValue*commissionPercent)/100).toFixed(1)
+                if (commission==0.0){
+                    commission=0
+                }
+                $('#commissionValue_'+id).val(parseInt(commission))
+
+                // profit -------
+                var currency=$('#currency_'+id).val()
+                if (currency==''){
+                    currency=0
+                }
+                var commissionValue=$('#commissionValue_'+id).val()
+
+                var profitValue=((commissionValue*currency)).toFixed(1)
+                if (profitValue==0.0){
+                    profitValue=0
                 }
 
-                $('#profit_'+id).val(parseInt(profit))
+                $('#currencyTk_'+id).val(parseInt(profitValue))
 
                 callback()
             }
 
             function totalProfitCalculate() {
+                var sumOfCommission=0;
                 var sumOfProfit=0;
-                $('.profit-value').each(function (i,data) {
-                    var profit=data.value
+
+                $('.commission-value').each(function (i,data) {
+                    var commossion=data.value
                     var id= (data.id).split('_')[1]
+
+                    if (commossion!='' && $('#id_'+id).is(":checked")){
+                        sumOfCommission+=parseInt(commossion)
+                    }
+                    $('#totalCommission').empty().val(sumOfCommission)
+                })
+
+                $('.currency-rate').each(function (i,data) {
+                    var id= (data.id).split('_')[1]
+                    var profit=$('#currencyTk_'+id).val()
 
                     if (profit!='' && $('#id_'+id).is(":checked")){
                         sumOfProfit+=parseInt(profit)
-                        console.log(profit)
+                        //console.log(sumOfProfit)
                     }
                     $('#totalProfit').empty().val(sumOfProfit)
                 })
@@ -684,12 +858,11 @@
             if(start_date=='' || end_date==''){
                 return false
             }else {
-                $('#commissionProfit').empty().load('{{URL::to("load-commission-profit-data")}}'+'?user_id='+userId+'&start_date='+start_date+'&end_date='+end_date)
+                $('#commissionProfit').empty().html('<center><img src=" {{asset('images/default/loader.gif')}}"/></center>').load('{{URL::to("load-commission-profit-data")}}'+'?user_id='+userId+'&start_date='+start_date+'&end_date='+end_date)
             }
 
         })
         // ------------------- End Load Commission & Profit --------------------
-
 
     </script>
 

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class CompanyVisit extends Model
 {
     protected $table='company_visits';
-    protected $fillable=['category_id','product_name','product_doc_file','visited_company','visited_company_address','status','quotation_value','profit_value','profit_percent','created_by','updated_by','visited_by'];
+    protected $fillable=['category_id','product_name','product_doc_file','visited_company','visited_company_address','status','quotation_value',
+        'profit_value','currency_rate','profit_value_tk','profit_percent','created_by','updated_by','visited_by'];
 
     public function companyVisitFollowUp(){
         return $this->hasOne(FollowUp::class,'company_visit_id','id');

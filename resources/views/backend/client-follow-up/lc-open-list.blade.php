@@ -92,24 +92,32 @@
             <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
                 <div class="row">
                     <div class="col-sm-12">
+
                         <div class="table-responsive">
-                            <table id="lcOpenDataList" class="table table-hover table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                <thead>
-                                <tr>
-                                    <th>Sl</th>
-                                    <th>Date</th>
-                                    <th>Company Name</th>
-                                    <th>Product</th>
-                                    <th>Contact Name</th>
-                                    <th>Contact Mobile</th>
-                                    <th>Contact Email</th>
-                                    <th>Status</th>
-                                    <th>Value .Tk</th>
-                                    <th>Visited By</th>
-                                    <th>Details</th>
-                                </tr>
-                                </thead>
-                            </table>
+                            <div class="reg-header pull-right">
+                                <button type="button" class="btn btn-success" onclick='exportTableToExcel("lcOpenList", "LcOpenList")'> Download Excel </button>
+                            </div>
+
+                            <div id="lcOpenList">
+                                <table id="lcOpenDataList" class="table table-hover table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th>Date</th>
+                                        <th>Company Name</th>
+                                        <th>Product</th>
+                                        <th>Contact Name</th>
+                                        <th>Contact Mobile</th>
+                                        <th>Contact Email</th>
+                                        <th>Status</th>
+                                        <th>Value .Tk</th>
+                                        <th>Visited By</th>
+                                        <th>Details</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -126,6 +134,53 @@
 @endsection
 
 @section('script')
+
+    <script>
+
+        function download_csv(csv, filename) {
+            var csvFile;
+            var downloadLink;
+            // CSV FILE
+            csvFile = new Blob([csv], {type: "text/csv"});
+            // Download link
+            downloadLink = document.createElement("a");
+
+            // File name
+            downloadLink.download = filename;
+
+            // We have to create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+
+            // Make sure that the link is not displayed
+            downloadLink.style.display = "none";
+
+            // Add the link to your DOM
+            document.body.appendChild(downloadLink);
+
+            // Lanzamos
+            downloadLink.click();
+        }
+
+
+        function exportTableToExcel(tableID, filename) {
+
+            var csv = [];
+            var rows = document.querySelectorAll("#"+tableID+" table tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("#"+tableID+" td, th");
+
+                for (var j = 0; j < cols.length; j++)
+                    row.push(cols[j].innerText);
+
+                csv.push(row.join(","));
+            }
+
+            // Download CSV
+            download_csv(csv.join("\n"), filename+'.csv');
+        }
+    </script>
+
 <script>
     $(function() {
         $('#lcOpenDataList').DataTable( {
@@ -183,6 +238,8 @@
 
 
         $('#lcOpenDataList').DataTable( {
+            scrollY: 600,
+            paging: false,
             processing: true,
             serverSide: true,
             ordering: true,

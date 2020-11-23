@@ -97,24 +97,30 @@
                     <div class="col-sm-12">
 
                         <div class="table-responsive">
-                            <table id="visitedData" class="table table-hover table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                <thead>
-                                <tr>
-                                    <th>Sl</th>
-                                    <th>Date</th>
-                                    <th>Company Name</th>
-                                    <th>Product</th>
-                                    <th>Contact Name</th>
-                                    <th>Contact Mobile</th>
-                                    <th>Contact Email</th>
-                                    <th>Status</th>
-                                    <th>Value .Tk</th>
-                                    <th>Visited By</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
+                            <div class="reg-header pull-right">
+                                <button type="button" class="btn btn-success" onclick='exportTableToExcel("companyVisitedData", "Daily_report")'> Download Excel </button>
+                            </div>
 
-                            </table>
+                            <div id="companyVisitedData">
+                                <table id="visitedData" class="table table-hover table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                    <thead>
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th>Date</th>
+                                        <th>Company Name</th>
+                                        <th>Product</th>
+                                        <th>Contact Name</th>
+                                        <th>Contact Mobile</th>
+                                        <th>Contact Email</th>
+                                        <th>Status</th>
+                                        <th>Value .Tk</th>
+                                        <th>Visited By</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,6 +142,54 @@
 @section('script')
 
 <script>
+
+    function download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        // CSV FILE
+        csvFile = new Blob([csv], {type: "text/csv"});
+        // Download link
+        downloadLink = document.createElement("a");
+
+        // File name
+        downloadLink.download = filename;
+
+        // We have to create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Make sure that the link is not displayed
+        downloadLink.style.display = "none";
+
+        // Add the link to your DOM
+        document.body.appendChild(downloadLink);
+
+        // Lanzamos
+        downloadLink.click();
+    }
+
+
+    function exportTableToExcel(tableID, filename) {
+
+        var csv = [];
+        var rows = document.querySelectorAll("#"+tableID+" table tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("#"+tableID+" td, th");
+
+            for (var j = 0; j < cols.length; j++)
+                row.push(cols[j].innerText);
+
+            csv.push(row.join(","));
+        }
+
+        // Download CSV
+        download_csv(csv.join("\n"), filename+'.csv');
+    }
+</script>
+
+
+<script>
+
     $('#searchData').on('click',function () {
 
         var follow_up_by=$('#userId').val()
@@ -168,6 +222,8 @@
 
 
         $('#visitedData').DataTable( {
+            scrollY: 600,
+            paging: false,
             processing: true,
             serverSide: true,
             ordering: true,
@@ -195,6 +251,7 @@
 <script>
     $(function() {
         $('#visitedData').DataTable( {
+
             processing: true,
             serverSide: true,
             ordering: true,

@@ -37,8 +37,9 @@ Route::middleware(['auth','disablepreventback','admin'])->group(function () {
     //  Super Admin area ================================
     Route::get('/dashboard', 'DashboadController@dashboard')->middleware('permission:dashboard');
 
+    Route::get('/profit-bar-data', 'DashboadController@searchProfitBarChartData')->middleware('permission:dashboard');
     Route::get('/status-bar-data', 'DashboadController@getStatusBarData')->middleware('permission:dashboard');
-    Route::get('/profit-chart-data', 'DashboadController@getProfitChartData')->middleware('permission:dashboard');
+    Route::get('/commission-chart-data', 'DashboadController@getCommissionChartData')->middleware('permission:dashboard');
 
     Route::post('/set-commission-profit', 'DashboadController@setCommissionAndProfit')->middleware('permission:dashboard');
 
@@ -64,6 +65,23 @@ Route::middleware(['auth','disablepreventback','admin'])->group(function () {
     Route::get('/show-all-lc-open-list','FollowUpController@showAlLlcOpenData')->middleware('permission:lc-open-list');
 
 
+    // Financial
+
+    Route::get('/all-expenditure','AssignExpenditureReportController@AllEmpExpenditure')->middleware('permission:all-expenditure');
+    Route::get('/all-expenditure-list','AssignExpenditureReportController@AllEmpExpenditureList')->middleware('permission:all-expenditure');
+
+    Route::resource('/budget-allocation','BudgetAllocationController');//->middleware('permission:assign-target');
+    Route::resource('/money-assign','MoneyAssignToEmpController');//->middleware('permission:assign-target');
+    Route::resource('/expenditure','EmpExpenditureController');//->middleware('permission:assign-target');
+    Route::get('/repay-to-user','EmpExpenditureController@getRepayToUser');//->middleware('permission:assign-target');
+
+    Route::get('/borrow-repay-request','EmpExpenditureController@showBorrowRepayRequest');//->middleware('permission:assign-target');
+    Route::get('/borrow-repay-request-list','EmpExpenditureController@showBorrowRepayRequestList');//->middleware('permission:assign-target');
+
+    Route::get('/transaction-request','EmpExpenditureController@showTransactionRequest')->middleware('permission:transaction-request');
+    Route::get('/transaction-request-list','EmpExpenditureController@showTransactionRequestList')->middleware('permission:transaction-request');
+
+    Route::get('assign-expenditure/{userId}','AssignExpenditureReportController@assignAndExpenditureReport');
 
     Route::resource('/assign-target','AssignTargetController')->middleware('permission:assign-target');
     Route::resource('/business-year','BusinessYearController')->middleware('permission:business-year');

@@ -9,12 +9,7 @@ use Carbon\Carbon;
 use FontLib\Table\Type\hhea;
 use Illuminate\Http\Request;
 use App\User;
-use Image;
-use Auth;
-use DB;
-use MyHelper;
-
-use Validator;
+use Image,Auth,DB,MyHelper,Validator;
 use Yajra\Acl\Models\Role;
 
 class UsersController extends Controller
@@ -113,8 +108,8 @@ class UsersController extends Controller
 
 
         if ($request->hasFile('image')){
-                $input['image']=MyHelper::photoUpload($request->file('image'),'images/users/',120,100);
-            }
+            $input['image']=MyHelper::photoUpload($request->file('image'),'images/users/',120,100);
+        }
 
         DB::beginTransaction();
         try{

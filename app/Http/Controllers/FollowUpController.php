@@ -288,7 +288,7 @@ class FollowUpController extends Controller
 
         $validateFields=[
             'contact_name'  => "required|max:150",
-            'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
+            'contact_mobile'  => "required|min:8|max:50",
             'contact_email'  => "email|max:140",
             'designation'  => "required|max:140",
             'discussion_summery' => 'required|max:499',
@@ -481,7 +481,7 @@ class FollowUpController extends Controller
         $followUp=FollowUp::findOrFail($id);
         $validateFields=[
             'contact_name'  => "required|max:150",
-            'contact_mobile'  => "required|min:11|max:11|regex:/(01)[0-9]{9}/",
+            'contact_mobile'  => "required|min:8|max:50",
             'contact_email'  => "email|max:140",
             'designation'  => "required|max:140",
             'discussion_summery' => 'required|max:499',
@@ -565,13 +565,12 @@ class FollowUpController extends Controller
                 //return 'q';
             }
 
-            if($input['pi_value']!=''){
+            if($input['pi_value']!='' && $input['pi_value']>0){
                 $data['quotation_value']= $input['pi_value'];
             }
-            if(isset($input['product_value']) && $input['product_value']!=''){
+            if(isset($input['product_value']) && $input['product_value']!='' && $input['product_value']>0){
                   $data['quotation_value']= $input['product_value'];
             }
-
 
             $companyVisit->update($data);
 

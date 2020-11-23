@@ -66,7 +66,14 @@
                                                 {{$user->email}}
                                             @endif
                                         </td>
-                                        <td>{{$user->userInfo->userDesignation->designation}}</td>
+                                        <td>
+                                            @if(!empty($user->userInfo->userDesignation->designation))
+                                            {{$user->userInfo->userDesignation->designation}}
+                                                @else
+                                            <span>No Designation</span>
+                                            @endif
+
+                                        </td>
                                         <td>{{$user->role_name}}</td>
                                         <td>
                                             @if(empty($user->salary))
@@ -87,6 +94,9 @@
                                         <td>
                                             {{Form::open(array('route'=>['all-users.destroy',$user->id],'method'=>'DELETE','id'=>"deleteForm$user->id"))}}
 
+                                            <a href="javascript:void(0)" onclick="monetaryInfo({{$user->id}})"  title="Click here to view monetary Information" class="btn btn-success btn-xs">
+                                                Monetary Info
+                                            </a>
                                             <a href='{{URL::to("all-users/$user->id"."/edit")}}' title="Update user info" class="btn btn-info btn-xs">
                                                 <i class="fa fa-pencil-square"></i>
                                             </a>
@@ -127,7 +137,22 @@
     </div>
 
 </div>
+
+<div class="modal fade" id="moneyAssignAndExpenditure"></div>
     <!-- /.box-body -->
-
-
 @endsection
+
+@section('script')
+
+    <script>
+
+        function monetaryInfo(userId) {
+
+            $('#moneyAssignAndExpenditure').html('<center><img src=" {{asset('images/default/loader.gif')}}"/></center>').load('{{URL::to("/assign-expenditure")}}'+'/'+userId);
+            $('#moneyAssignAndExpenditure').modal('show')
+        }
+
+    </script>
+
+
+    @endsection
